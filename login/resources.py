@@ -7,6 +7,7 @@ from login.db import db
 from login.models import User
 
 from login.blocklist import BLOCKED
+from login.pwd import bcrypt
 
 
 class Home(Resource):
@@ -41,9 +42,8 @@ class Login(Resource):
             username = request.form.get('username')
             pwd = request.form.get('pwd')
 
-            user = User.query.filter((User.user_name == username) &
-                                     (User.user_pwd == pwd)).first()
-            if user:
+            user = User.query.filter((User.user_name == username)).first()
+            if user and bcrypt.check_password_hash(user.user_pwd, pwd):
                 access_token = create_access_token(
                     identity=str(user.user_id), fresh=True)
                 response = make_response(
@@ -68,12 +68,12 @@ class SignUp(Resource):
         if form.validate_on_submit():
             username = request.form.get('username')
             pwd = request.form.get('pwd')
+            pwd_hash = bcrypt.generate_password_hash(pwd).decode('utf-8')
 
-            user = User.query.filter((User.user_name == username) &
-                                     (User.user_pwd == pwd)).first()
+            user = User.query.filter((User.user_name == username)).first()
 
             if not user:
-                db.session.add(User(user_name=username, user_pwd=pwd))
+                db.session.add(User(user_name=username, user_pwd=pwd_hash))
                 db.session.commit()
                 return make_response(render_template('error.html', error='SignUp Success'))
 

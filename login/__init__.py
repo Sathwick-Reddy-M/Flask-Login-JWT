@@ -12,10 +12,10 @@ from login.forms import LoginForm
 
 app = Flask(__name__)
 app.config['BASE_URL'] = 'http://127.0.0.1:5000'
-app.config['SECRET_KEY'] = 'secret1'
+app.config['SECRET_KEY'] = 'e9cab77e2de77c4bf7117d851f3563e0'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 
-app.config['JWT_SECRET_KEY'] = 'secret2'
+app.config['JWT_SECRET_KEY'] = '9ec4e8d8f1a08434a04f3ce26c38f7dd'
 
 # If true this will only allow the cookies that contain your JWTs to be sent
 # over https. In production, this should always be set to True
@@ -24,7 +24,7 @@ app.config["JWT_COOKIE_SECURE"] = False
 app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 
 app.config["JWT_TOKEN_LOCATION"] = ['cookies']
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=2)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=30)
 
 app.config["JWT_SESSION_COOKIE"] = False
 
@@ -52,7 +52,7 @@ def refresh_tokens(response):
     try:
         exp_timestamp = get_jwt()["exp"]
         now = datetime.now(timezone.utc)
-        target_timestamp = datetime.timestamp(now + timedelta(minutes=1))
+        target_timestamp = datetime.timestamp(now + timedelta(minutes=10))
         if target_timestamp > exp_timestamp:
             access_token = create_access_token(identity=get_jwt_identity())
             set_access_cookies(response, access_token)
