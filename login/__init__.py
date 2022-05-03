@@ -69,39 +69,34 @@ def check_if_token_in_blocklist(headers, decrypted_token):
 
 @jwt.unauthorized_loader
 def no_token(err):
-    response = make_response(
-        redirect(url_for('login', form=LoginForm(), is_login=False)))
+    response = make_response(redirect(url_for('login')))
     unset_jwt_cookies(response)
     return response
 
 
 @jwt.needs_fresh_token_loader
 def no_fresh_token(headers, payload):
-    response = make_response(
-        redirect(url_for('login', form=LoginForm(), is_login=False)))
+    response = make_response(redirect(url_for('login')))
     unset_jwt_cookies(response)
     return response
 
 
 @jwt.revoked_token_loader
 def revoked_token(headers, payload):
-    response = make_response(
-        redirect(url_for('login', form=LoginForm(), is_login=False)))
+    response = make_response(redirect(url_for('login')))
     unset_jwt_cookies(response)
     return response
 
 
 @jwt.expired_token_loader
 def expired_token(headers, payload):
-    response = make_response(
-        redirect(url_for('login', form=LoginForm(), is_login=False)))
+    response = make_response(redirect(url_for('login')))
     unset_jwt_cookies(response)
     return response
 
 
 @jwt.invalid_token_loader
 def invalid_token(headers, payload):
-    response = make_response(
-        redirect(url_for('login', form=LoginForm(), is_login=False)))
+    response = make_response(redirect(url_for('login')))
     unset_jwt_cookies(response)
     return response
